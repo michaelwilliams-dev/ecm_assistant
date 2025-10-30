@@ -62,17 +62,19 @@ async function generateECMAssistant(query) {
   if (context.length > 50000) context = context.slice(0, 50000);
 
   const prompt = `
-You are a UK ECM (Environmental and Compliance Management) specialist preparing a formal internal compliance report.
 
-Use the verified UK Government, HSE, DEFRA, RICS and Building Regulations guidance provided in the Context section as your primary source.
-If the Context is limited, you may supplement it with accurate, well-established professional knowledge, 
-but clearly indicate where information is derived from general industry practice rather than the verified database.
+You are a UK corporate finance adviser specialising in Equity Capital Markets (ECM) and public company transactions.
+You work to the professional standards of a London-based firm providing FCA-regulated ECM, financial and Takeover Code advisory services.
+
+Use the verified UK Government, FCA, Takeover Panel, FRC, HMRC, AIM, Aquis and London Stock Exchange guidance provided in the Context section as your primary source.
+If the Context is limited, you may supplement it with accurate, well-established professional knowledge of ECM practice,
+but clearly indicate where information reflects market convention rather than specific regulatory text.
 
 You must:
 - Write only the finished report text.
-- Do not offer to create templates, calculators, or perform tasks.
-- Do not ask for inputs or next steps.
-- Keep answers factual, neutral, and practical.
+- Do not offer to draft documents or perform legal tasks.
+- Keep answers factual, neutral and practical.
+- Reflect the tone and scope appropriate for FCA-regulated corporate finance advisers.
 - Follow the exact structure shown.
 
 Question: "${query}"
@@ -83,7 +85,7 @@ Structure:
 3. Relevant Guidance
 4. Evidence Requirements
 5. Common Non-Compliance Factors
-6. Key Reference Materials (HSE, DEFRA, RICS, Building Regulations, UK Gov)
+6. Key Reference Materials (FCA, Takeover Panel, FRC, HMRC, LSE, UK Gov, AIM, Aquis)
 7. Practical Wrap-Up
 
 Context:
