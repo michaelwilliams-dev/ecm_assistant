@@ -1,6 +1,6 @@
-// server.js — Building Surveyor Assistant Report (pure-JS version)
-// ISO Timestamp: 🕒 2025-10-15T02:10:00Z
-// ✅ Added FAISS chunk count to footer (PDF + Word) — no other changes
+// server.js — ECM Assistant (pure-JS version)
+// ISO Timestamp: 🕒 2025-10-29T16:15:00Z
+// ✅ Identical logic to Building Surveyor Assistant; text and file references updated for ECM Assistant
 
 import express from "express";
 import bodyParser from "body-parser";
@@ -56,16 +56,16 @@ async function queryFaissIndex(question) {
 }
 
 /* ----------------------- Report Generator ----------------------------- */
-async function generateBuildingSurveyorAssistant(query) {
+async function generateECMAssistant(query) {
   const { joined, count } = await queryFaissIndex(query);
   let context = joined;
   if (context.length > 50000) context = context.slice(0, 50000);
 
   const prompt = `
-You are a qualified UK building surveyor preparing a formal internal compliance report.
+You are a UK ECM (Environmental and Compliance Management) specialist preparing a formal internal compliance report.
 
-Use the verified UK Government, RICS, HSE and Building Regulations guidance provided in the Context section as your primary source.
-If the Context is limited, you may supplement it with accurate, well-established professional knowledge,
+Use the verified UK Government, HSE, DEFRA, RICS and Building Regulations guidance provided in the Context section as your primary source.
+If the Context is limited, you may supplement it with accurate, well-established professional knowledge, 
 but clearly indicate where information is derived from general industry practice rather than the verified database.
 
 You must:
@@ -83,7 +83,7 @@ Structure:
 3. Relevant Guidance
 4. Evidence Requirements
 5. Common Non-Compliance Factors
-6. Key Reference Materials (HMRC, HSE, RICS, Building Regulations)
+6. Key Reference Materials (HSE, DEFRA, RICS, Building Regulations, UK Gov)
 7. Practical Wrap-Up
 
 Context:
@@ -128,14 +128,14 @@ ${context}
 
   const footer = `
 
-This report was prepared using the AIVS FAISS-indexed HMRC knowledge base,
-derived entirely from verified UK Government publications and professional manuals.
+This report was prepared using the AIVS FAISS-indexed ECM knowledge base,
+derived entirely from verified UK Government, HSE, DEFRA and professional manuals.
 It is provided for internal compliance and advisory purposes only and should not
-be relied upon as a substitute for professional surveyors advice.
+be relied upon as a substitute for professional environmental or compliance advice.
 
 ISO 42001 Fairness Verification: ${fairnessResult}
 Reg. No. AIVS/UK/${regRand}/${count}
- © AIVS Software Limited 2025 — All rights reserved.`;
+© AIVS Software Limited 2025 — All rights reserved.`;
 
   return `${text}\n\n${footer}`;
 }
@@ -193,7 +193,7 @@ async function buildPdfBufferStructured({ fullName, ts, question, reportText }) 
     }
   };
 
-  draw("Building Surveyor Assistant", margin, y, fsTitle, fontBold);
+  draw("ECM Assistant Report", margin, y, fsTitle, fontBold);
   y -= fsTitle * 1.4;
   para(`Prepared for: ${fullName || "N/A"}`, margin);
   para(`Timestamp (UK): ${ts}`, margin);
@@ -214,7 +214,7 @@ app.post("/ask", async (req, res) => {
 
   try {
     const ts = new Date().toISOString();
-    const reportText = await generateBuildingSurveyorAssistant(question);
+    const reportText = await generateECMAssistant(question);
     const pdfBuf = await buildPdfBufferStructured({
       fullName: email,
       ts,
@@ -228,7 +228,7 @@ app.post("/ask", async (req, res) => {
       new Paragraph({
         children: [
           new TextRun({
-            text: "Building Surveyor Assistant Report",
+            text: "ECM Assistant Report",
             bold: true,
             size: 32,
           }),
@@ -320,10 +320,10 @@ app.post("/ask", async (req, res) => {
     const regRand = `${dateSeed}-${randomPart}`;
 
     const footerText = `
-This report was prepared using the AIVS FAISS-indexed HMRC knowledge base,
-derived entirely from verified UK Government publications and professional manuals.
+This report was prepared using the AIVS FAISS-indexed ECM knowledge base,
+derived entirely from verified UK Government, HSE, DEFRA and professional manuals.
 It is provided for internal compliance and advisory purposes only and should not
-be relied upon as a substitute for professional surveyore, accounting or tax advice.
+be relied upon as a substitute for professional environmental or compliance advice.
 
 Reg. No. AIVS/UK/${regRand}/${globalIndex ? globalIndex.length : 0}
 © AIVS Software Limited 2025 — All rights reserved.`;
@@ -362,7 +362,7 @@ Reg. No. AIVS/UK/${regRand}/${globalIndex ? globalIndex.length : 0}
                 { Email: managerEmail },
                 { Email: clientEmail },
               ].filter((r) => r.Email),
-              Subject: "Your AI Building Surveyor Assistant Report",
+              Subject: "Your AI ECM Assistant Report",
               TextPart: reportText,
               HTMLPart: reportText
                 .split("\n")
@@ -371,13 +371,13 @@ Reg. No. AIVS/UK/${regRand}/${globalIndex ? globalIndex.length : 0}
               Attachments: [
                 {
                   ContentType: "application/pdf",
-                  Filename: `audit-${ts}.pdf`,
+                  Filename: `ecm-audit-${ts}.pdf`,
                   Base64Content: pdfBuf.toString("base64"),
                 },
                 {
                   ContentType:
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                  Filename: "report.docx",
+                  Filename: "ecm-report.docx",
                   Base64Content: docBuf.toString("base64"),
                 },
               ],
@@ -399,9 +399,9 @@ Reg. No. AIVS/UK/${regRand}/${globalIndex ? globalIndex.length : 0}
 });
 
 app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "building_surveyor.html"))
+  res.sendFile(path.join(__dirname, "public", "ecm.html"))
 );
 
 app.listen(Number(PORT), "0.0.0.0", () =>
-  console.log(`🟢 Building Surveyor Assistant running on port ${PORT}`)
+  console.log(`🟢 ECM Assistant running on port ${PORT}`)
 );
