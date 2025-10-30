@@ -1,10 +1,10 @@
-// public/script.js — Accountant Assistant PRO
-// ISO Timestamp: 🕒 2025-10-14T10:45:00Z
-// ✅ Connects to accounting-assistant-pro backend via same-origin /ask
+// public/script.js — ECM Assistant
+// ISO Timestamp: 🕒 2025-10-29T15:45:00Z
+// ✅ Connects to ECM Assistant backend via same-origin /ask
 // ✅ Sends all three email fields (user, manager, optional)
-// ✅ Displays accountant report or clear error message
+// ✅ Displays ECM report or clear error message
 
-console.log("CLIENT JS VERSION = v2025-10-14T10:45:00Z (Accounting Assistant PRO)");
+console.log("CLIENT JS VERSION = v2025-10-29T15:45:00Z (ECM Assistant)");
 
 document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
@@ -44,7 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     console.log("📤 [CLIENT /ask] Sending payload", payload);
-    output.textContent = "⏳ Semantic Search then generating Building Surveyor Report – please wait.";
+    output.textContent =
+      "⏳ Semantic Search then generating ECM Assistant Report – please wait.";
 
     try {
       // ✅ same-origin endpoint
@@ -62,16 +63,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ======== BEGIN CHANGED LINES ========
+      // ======== BEGIN RESPONSE HANDLING ========
       if (data?.answer) {
         output.innerHTML = data.answer;
       } else if (data?.reportText) {
         output.innerHTML = data.reportText;
       } else {
-        output.innerHTML = "⚠️ No report returned. Please check backend logs.";
+        output.innerHTML =
+          "⚠️ No report returned. Please check backend logs.";
         console.warn("⚠️ Unexpected response:", data);
       }
-      // ======== END CHANGED LINES ========
+      // ======== END RESPONSE HANDLING ========
 
     } catch (err) {
       console.error("❌ Network or fetch error:", err);
