@@ -33,7 +33,7 @@ let globalIndex = null;
 (async () => {
   try {
     console.log("📦 Preloading FAISS vector index (all vectors)...");
-    globalIndex = await loadIndex(500000); // ✅ changed from 10000 to 0
+    globalIndex = await loadIndex(10000); // ✅ changed from 10000 to 0
     console.log(`✅ Preloaded ${globalIndex.length.toLocaleString()} vectors.`);
   } catch (e) {
     console.error("❌ Preload failed:", e.message);
