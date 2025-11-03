@@ -8,7 +8,7 @@
 import fs from "fs";
 import { OpenAI } from "openai";
 
-const INDEX_PATH = "/mnt/data/vector.index";
+const INDEX_PATH = "/mnt/data/vector_index.json";
 const META_PATH  = "/mnt/data/chunks_metadata.final.jsonl";
 const CHUNK_LIMIT = 50000; // number of vectors per load batch
 
