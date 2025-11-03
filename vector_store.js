@@ -85,7 +85,7 @@ export async function searchIndex(rawQuery, index) {
 
   console.log("🔍 [AIVS Search] Query:", query);
   const response = await openai.embeddings.create({
-    model: "text-embedding-3-small",
+    model: "text-embedding-3-large",
     input: [query],
   });
 
