@@ -32,8 +32,8 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 let globalIndex = null;
 (async () => {
   try {
-    console.log("📦 Preloading FAISS vector index (10 000 chunks)...");
-    globalIndex = await loadIndex(10000);
+    console.log("📦 Preloading FAISS vector index (all vectors)...");
+    globalIndex = await loadIndex(0); // ✅ changed from 10000 to 0
     console.log(`✅ Preloaded ${globalIndex.length.toLocaleString()} vectors.`);
   } catch (e) {
     console.error("❌ Preload failed:", e.message);
