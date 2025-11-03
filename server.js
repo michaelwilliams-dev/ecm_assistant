@@ -1,6 +1,7 @@
 // server.js — ECM Assistant (pure-JS version)
-// ISO Timestamp: 🕒 2025-10-29T16:15:00Z
-// ✅ Identical logic to Building Surveyor Assistant; text and file references updated for ECM Assistant
+// ISO Timestamp: 🕒 2025-11-03T16:45:00Z
+// ✅ Identical to previous stable build with 10 000-chunk preload
+// ✅ Added City-only domain guard inside generateECMAssistant()
 
 import express from "express";
 import bodyParser from "body-parser";
@@ -32,8 +33,8 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 let globalIndex = null;
 (async () => {
   try {
-    console.log("📦 Preloading FAISS vector index (all vectors)...");
-    globalIndex = await loadIndex(10000); // ✅ changed from 10000 to 0
+    console.log("📦 Preloading FAISS vector index (10 000 chunks)...");
+    globalIndex = await loadIndex(10000); // ✅ retained 10 000-chunk preload
     console.log(`✅ Preloaded ${globalIndex.length.toLocaleString()} vectors.`);
   } catch (e) {
     console.error("❌ Preload failed:", e.message);
@@ -61,7 +62,20 @@ async function generateECMAssistant(query) {
   let context = joined;
   if (context.length > 50000) context = context.slice(0, 50000);
 
+  // ✅ Domain guard: restrict to City / financial-market regulation topics only
+  const domainGuard = `
+You must answer **only** within the scope of UK City and financial-market regulation
+(FCA, FSA, AIM, Aquis, Takeover Panel, Bank of England, LSE, HMRC, FRC).
+If a question concerns any other discipline (health & safety, property, environment,
+employment, surveying, HR, construction, etc.), reply exactly:
+
+"That topic is outside the City regulatory domain handled by this assistant."
+
+Never provide general-purpose advice.
+`;
+
   const prompt = `
+${domainGuard}
 
 You are a UK corporate finance adviser specialising in Equity Capital Markets (ECM) and public company transactions.
 You work to the professional standards of a London-based firm providing FCA-regulated ECM, financial and Takeover Code advisory services.
@@ -229,11 +243,7 @@ app.post("/ask", async (req, res) => {
     docParagraphs.push(
       new Paragraph({
         children: [
-          new TextRun({
-            text: "ECM Assistant Report",
-            bold: true,
-            size: 32,
-          }),
+          new TextRun({ text: "ECM Assistant Report", bold: true, size: 32 }),
         ],
         alignment: "center",
         spacing: { after: 100 },
