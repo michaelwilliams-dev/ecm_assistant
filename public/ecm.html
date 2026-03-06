@@ -6,21 +6,77 @@
   <link rel="stylesheet" href="style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --bg: #f1f2ee;
+      --ink: #0b1f2a;
+      --ink-dark: #14232b;
+      --accent: #ff6a00;
+      --muted: #415a67;
+      --soft: #e6e7e2;
+      --soft-border: #d9dad5;
+      --danger: #b91c1c;
+      --white: #ffffff;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      background-color: #f7f9fc;
+      background-color: var(--bg);
       padding: 40px;
       max-width: 700px;
       margin: auto;
-      color: #333;
+      color: var(--ink);
     }
-    h2 { text-align: center; color: #4e65ac; }
+
+    .top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    #page-iso,
+    .iso-pill {
+      font-size: 0.85rem;
+      color: var(--muted);
+      background: var(--soft);
+      border: 1px solid var(--soft-border);
+      padding: 6px 10px;
+      display: inline-block;
+      border-radius: 0;
+      font-weight: 600;
+    }
+
+    .iso-note {
+      font-size: 0.95rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+      margin-top: 0;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #111111;
+    }
+
+    h3 {
+      text-align: center;
+      color: #111111;
+    }
+
     label {
       font-weight: bold;
       margin-top: 10px;
       display: block;
+      color: #111111;
     }
-    input, textarea, button {
+
+    input:not([type="checkbox"]),
+    textarea,
+    button {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -28,46 +84,99 @@
       font-size: 1rem;
       box-sizing: border-box;
     }
-    textarea { resize: vertical; min-height: 100px; }
+
+    input:not([type="checkbox"]),
+    textarea {
+      border: 1px solid var(--ink);
+      border-left: 4px solid var(--accent);
+      border-radius: 0;
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    input:not([type="checkbox"]):focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.18);
+    }
+
+    input[type="checkbox"] {
+      accent-color: #14232b;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
     button {
-      background-color: #4e65ac;
+      background-color: var(--ink-dark);
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 0;
       cursor: pointer;
       font-size: 1rem;
     }
-    button:hover { background-color: #3c5093; }
-    pre {
-      background: #f4f4f4;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      white-space: pre-wrap;
+
+    button:hover {
+      background-color: var(--ink);
     }
+
+    pre {
+      background: var(--white);
+      padding: 15px;
+      border: 1px solid var(--soft-border);
+      border-left: 4px solid var(--accent);
+      border-radius: 0;
+      white-space: pre-wrap;
+      color: var(--ink);
+    }
+
     .terms-box {
       font-size: 14px;
       margin-top: 15px;
       margin-bottom: 10px;
+      color: var(--ink);
     }
-    .terms-box a { color: #4e65ac; text-decoration: underline; }
 
-    /* ✅ NEW: Bold numbered section headings inside the output */
+    .terms-box a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
     #response {
       line-height: 1.5;
     }
+
     #response strong {
       font-weight: bold;
-      color: #4e65ac; /* AIVS blue */
+      color: #111111;
+    }
+
+    .data-note {
+      text-align: center;
+      color: var(--muted);
     }
   </style>
 </head>
 <body>
+
+  <div class="top-meta">
+    <div id="page-iso">🕒 ISO Timestamp: <span id="iso-timestamp"></span></div>
+    <div class="iso-pill">ISO/IEC 42001</div>
+  </div>
+
   <h2>ECM Assistant</h2>
-  <p>🕒 ISO Timestamp: <span id="iso-timestamp"></span></p>
-  <p style="text-align:center;color:#4e65ac;">
-   ECM Assistant data added 29 October 2025.
+
+  <p class="iso-note">
+    Operated within AIVS Software Limited’s ISO/IEC 42001-certified AI management system.
   </p>
+
+  <p class="data-note">
+    ECM Assistant data added 29 October 2025.
+  </p>
+
   <label for="clarification">Question or topic</label>
   <textarea id="clarification"
     placeholder="e.g. Explain compliance obligations for ECM projects"></textarea>
@@ -81,7 +190,6 @@
   <label for="clientEmail">Audit Email</label>
   <input type="email" id="clientEmail" placeholder="client@theirbusiness.co.uk" />
 
-  <!-- ✅ Terms & Conditions checkbox (pre-ticked) -->
   <div class="terms-box">
     <label>
       <input type="checkbox" id="termsCheckbox" checked />
@@ -97,17 +205,14 @@
 
   <script src="script.js?v=2025-10-29T15:30:00Z"></script>
 
-  <!-- ✅ Terms checkbox control -->
   <script>
     const termsCheckbox = document.getElementById("termsCheckbox");
     const generateBtn = document.getElementById("generate");
-    // disable only if user unticks
     termsCheckbox.addEventListener("change", () => {
       generateBtn.disabled = !termsCheckbox.checked;
     });
   </script>
 
-  <!-- ✅ iframe auto-height broadcaster -->
   <script>
     function sendHeight() {
       window.parent.postMessage(
@@ -118,6 +223,12 @@
     window.addEventListener("load", sendHeight);
     new ResizeObserver(sendHeight).observe(document.body);
   </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const isoEl = document.getElementById("iso-timestamp");
+      if (isoEl) isoEl.textContent = new Date().toISOString();
+    });
+  </script>
 </body>
 </html>
-
